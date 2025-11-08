@@ -4,121 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine RizQ - ইসলামিক রিওয়ার্ড</title>
-    <style>
-        :root {
-            --bg-dark: #0A0216;
-            --neon-purple: #A020F0;
-            --text-white: #FFFFFF;
-        }
-        
-        body {
-            background: var(--bg-dark);
-            color: var(--text-white);
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            color: var(--neon-purple);
-            margin: 20px 0;
-            text-shadow: 0 0 10px var(--neon-purple);
-        }
-        
-        .card {
-            background: rgba(160, 32, 240, 0.1);
-            border: 1px solid var(--neon-purple);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
-            box-shadow: 0 0 15px rgba(160, 32, 240, 0.3);
-        }
-        
-        .balance {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--neon-purple);
-            margin: 10px 0;
-        }
-        
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, var(--neon-purple), #5800FF);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: var(--neon-purple);
-            border: 1px solid var(--neon-purple);
-        }
-    </style>
+    
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <!-- Monetag Ads -->
+    <script>
+        (function(m,o,n,e,t,a,g){
+            m['__Monetag']=t;m[t]=m[t]||function(){(m[t].q=m[t].q||[]).push(arguments)};
+            a=o.createElement(n);g=o.getElementsByTagName(n)[0];
+            a.async=1;a.src=e;g.parentNode.insertBefore(a,g)
+        })(window,document,'script','https://monetag.com/script.js','monetag');
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">Divine RizQ</div>
-        
-        <div class="card">
-            <div>আপনার ব্যালেন্স</div>
-            <div class="balance">0.00 ISLM</div>
-        </div>
-        
-        <div class="card">
-            <button class="btn btn-primary">এড দেখুন (+0.02 ISLM)</button>
-            <button class="btn btn-secondary">দৈনিক রিওয়ার্ড</button>
-            <button class="btn btn-secondary">রেফারেল সিস্টেম</button>
-            <button class="btn btn-secondary">উইথড্র করুন</button>
-        </div>
-        
-        <div class="card">
-            <h3>🚀 শুরু করুন আপনার আয়ের যাত্রা!</h3>
-            <p>হালাল উপায়ে ইনকাম করুন</p>
-        </div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">Divine RizQ</div>
+            <div class="user-balance">
+                <span id="balanceAmount">0.00 ISLM</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboard-page">
+                <div class="card">
+                    <div class="balance-display">
+                        <div class="balance-label">আপনার ব্যালেন্স</div>
+                        <div class="balance-amount" id="mainBalance">0.00 ISLM</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>দ্রুত একশন</h3>
+                    <button class="btn btn-primary" id="watchAdBtn">এড দেখুন (+0.02 ISLM)</button>
+                    <button class="btn btn-secondary" id="dailyRewardBtn">দৈনিক রিওয়ার্ড</button>
+                    <button class="btn btn-secondary" id="tasksBtn">টাস্ক করুন</button>
+                    <button class="btn btn-secondary" id="referralBtn">বন্ধুকে আমন্ত্রণ করুন</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalEarned">0.00</div>
+                        <div class="stat-label">মোট আয়</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeDays">0</div>
+                        <div class="stat-label">সক্রিয় দিন</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ads Page -->
+            <div class="page" id="ads-page">
+                <div class="card">
+                    <h3>এড দেখে ইনকাম করুন</h3>
+                    <p>প্রতি এড দেখলে পাবেন 0.02 ISLM</p>
+                    
+                    <div class="ad-options">
+                        <button class="btn btn-primary ad-btn" data-type="interstitial">
+                            📺 ফুল স্ক্রিন এড
+                        </button>
+                        <button class="btn btn-primary ad-btn" data-type="popup">
+                            🪟 পপআপ এড
+                        </button>
+                        <button class="btn btn-secondary ad-btn" data-type="auto">
+                            🔄 অটো এড
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Reward Page -->
+            <div class="page" id="daily-page">
+                <div class="card">
+                    <div class="reward-card">
+                        <div class="reward-icon">🎁</div>
+                        <div class="reward-amount">0.50 ISLM</div>
+                        <div class="reward-message" id="rewardMessage">দৈনিক রিওয়ার্ড উপলব্ধ!</div>
+                        <button class="btn btn-primary" id="claimRewardBtn">রিওয়ার্ড নিন</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Page -->
+            <div class="page" id="referral-page">
+                <div class="card">
+                    <h3>বন্ধুকে আমন্ত্রণ করুন</h3>
+                    <p>বন্ধু রেজিস্টার করলে পাবেন 10% বোনাস</p>
+                    
+                    <div class="referral-link-container">
+                        <input type="text" id="referralLink" readonly class="referral-input">
+                        <button class="btn btn-primary" id="copyLinkBtn">লিংক কপি করুন</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Page -->
+            <div class="page" id="withdraw-page">
+                <div class="card">
+                    <h3>টাকা উত্তোলন করুন</h3>
+                    
+                    <div class="info-box">
+                        <h4>⚠️ শর্তাবলী:</h4>
+                        <ul>
+                            <li>সর্বনিম্ন উত্তোলন: 28 ISLM</li>
+                            <li>চার্জ: 2%</li>
+                            <li>রেফারেল বোনাস: 10%</li>
+                        </ul>
+                    </div>
+
+                    <form id="withdrawForm">
+                        <div class="form-group">
+                            <label>পরিমাণ (ISLM)</label>
+                            <input type="number" id="withdrawAmount" min="28" step="0.01" placeholder="28" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>পদ্ধতি</label>
+                            <select id="withdrawMethod" required>
+                                <option value="">পদ্ধতি নির্বাচন করুন</option>
+                                <option value="bKash">bKash</option>
+                                <option value="BTC">Bitcoin</option>
+                                <option value="ETH">Ethereum</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">উত্তোলন রিকোয়েস্ট করুন</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="dashboard">
+                <span>🏠</span>
+                <span>হোম</span>
+            </button>
+            <button class="nav-btn" data-page="ads">
+                <span>📺</span>
+                <span>এড</span>
+            </button>
+            <button class="nav-btn" data-page="daily">
+                <span>🎁</span>
+                <span>দৈনিক</span>
+            </button>
+            <button class="nav-btn" data-page="referral">
+                <span>👥</span>
+                <span>রেফার</span>
+            </button>
+            <button class="nav-btn" data-page="withdraw">
+                <span>💰</span>
+                <span>উইথড্র</span>
+            </button>
+        </nav>
     </div>
 
-    <script>
-        // Basic Demo Functionality
-        console.log("Divine RizQ App Loaded!");
-        
-        // Telegram WebApp Check
-        if (window.Telegram && window.Telegram.WebApp) {
-            Telegram.WebApp.expand();
-            console.log("Running in Telegram");
-        } else {
-            console.log("Running in Browser - Demo Mode");
-        }
-        
-        // Demo Balance Update
-        let balance = 0.00;
-        
-        function updateBalance(amount) {
-            balance += amount;
-            document.querySelector('.balance').textContent = balance.toFixed(2) + ' ISLM';
-            alert('+' + amount + ' ISLM যোগ হয়েছে! ✅');
-        }
-        
-        // Add click events for demo
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            updateBalance(0.02);
-        });
-    </script>
+    <!-- JavaScript Files -->
+    <script src="js/app.js"></script>
+    <script src="js/demo.js"></script>
 </body>
 </html>
