@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine RizQ - ইসলামিক রিওয়ার্ড</title>
+    <style>
+        :root {
+            --bg-dark: #0A0216;
+            --neon-purple: #A020F0;
+            --text-white: #FFFFFF;
+        }
+        
+        body {
+            background: var(--bg-dark);
+            color: var(--text-white);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            color: var(--neon-purple);
+            margin: 20px 0;
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+        
+        .card {
+            background: rgba(160, 32, 240, 0.1);
+            border: 1px solid var(--neon-purple);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.3);
+        }
+        
+        .balance {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--neon-purple);
+            margin: 10px 0;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--neon-purple), #5800FF);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Divine RizQ</div>
+        
+        <div class="card">
+            <div>আপনার ব্যালেন্স</div>
+            <div class="balance">0.00 ISLM</div>
+        </div>
+        
+        <div class="card">
+            <button class="btn btn-primary">এড দেখুন (+0.02 ISLM)</button>
+            <button class="btn btn-secondary">দৈনিক রিওয়ার্ড</button>
+            <button class="btn btn-secondary">রেফারেল সিস্টেম</button>
+            <button class="btn btn-secondary">উইথড্র করুন</button>
+        </div>
+        
+        <div class="card">
+            <h3>🚀 শুরু করুন আপনার আয়ের যাত্রা!</h3>
+            <p>হালাল উপায়ে ইনকাম করুন</p>
+        </div>
+    </div>
+
+    <script>
+        // Basic Demo Functionality
+        console.log("Divine RizQ App Loaded!");
+        
+        // Telegram WebApp Check
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.expand();
+            console.log("Running in Telegram");
+        } else {
+            console.log("Running in Browser - Demo Mode");
+        }
+        
+        // Demo Balance Update
+        let balance = 0.00;
+        
+        function updateBalance(amount) {
+            balance += amount;
+            document.querySelector('.balance').textContent = balance.toFixed(2) + ' ISLM';
+            alert('+' + amount + ' ISLM যোগ হয়েছে! ✅');
+        }
+        
+        // Add click events for demo
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            updateBalance(0.02);
+        });
+    </script>
+</body>
+</html>
