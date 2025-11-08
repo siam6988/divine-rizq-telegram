@@ -1,0 +1,113 @@
+:root {
+    --bg-dark: #0A0216;
+    --bg-darker: #05010C;
+    --neon-purple: #A020F0;
+    --neon-blue: #5800FF;
+    --text-white: #FFFFFF;
+    --text-gray: #CCCCCC;
+    --card-bg: rgba(20, 5, 40, 0.7);
+    --success: #00FF7F;
+    --error: #FF4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 400px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg-dark);
+    position: relative;
+}
+
+.app-header {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--neon-purple);
+    box-shadow: 0 2px 10px rgba(160, 32, 240, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.user-balance {
+    font-weight: 600;
+    color: var(--neon-purple);
+}
+
+.main-content {
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border-top: 1px solid var(--neon-purple);
+    display: flex;
+    padding: 10px 5px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    padding: 8px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+}
+
+.nav-btn.active {
+    color: var(--neon-purple);
+    background: rgba(160, 32, 240, 0.1);
+}
+
+.nav-btn span:first-child {
+    font-size: 1.2rem;
+}
