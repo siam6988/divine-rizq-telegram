@@ -32,5 +32,5 @@ divine-rizq-telegram/
 2. Telegram bot-এ web app URL সেট করুন
 3. Firebase configuration করুন
 
-## 📞 Contact
-Developer: Your Name
+##  Contact:- fakegmlsr@gmail.com
+Developer: Siam
