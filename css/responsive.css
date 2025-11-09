@@ -1,0 +1,239 @@
+/* Professional Responsive Design */
+
+/* Mobile First Approach */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .app-container {
+        max-width: 540px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .quick-actions {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 720px;
+        border-left: var(--border-neon);
+        border-right: var(--border-neon);
+        box-shadow: var(--shadow-neon);
+    }
+    
+    .main-nav {
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        margin: 0 20px;
+    }
+    
+    .main-content {
+        padding: 30px;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .app-container {
+        max-width: 960px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .app-container {
+        max-width: 1140px;
+    }
+}
+
+/* Mobile Specific Adjustments */
+@media (max-width: 480px) {
+    .header-content {
+        padding: 12px 15px;
+    }
+    
+    .logo-text {
+        font-size: 1.1rem;
+    }
+    
+    .balance-amount {
+        font-size: 1rem;
+    }
+    
+    .main-content {
+        padding: 15px;
+        padding-bottom: 70px;
+    }
+    
+    .card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .balance-amount-main {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .nav-item {
+        padding: 10px 5px;
+        font-size: 0.75rem;
+    }
+    
+    .nav-icon {
+        font-size: 1rem;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet Landscape */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .app-header {
+        position: relative;
+    }
+    
+    .main-content {
+        padding-bottom: 60px;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo-text {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Dark mode support (always dark for this app) */
+@media (prefers-color-scheme: dark) {
+    /* Already dark themed */
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loader {
+        animation: none;
+    }
+    
+    .reward-icon {
+        animation: none;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+        transform: none;
+    }
+    
+    .action-btn:hover {
+        transform: none;
+        background: var(--bg-card);
+    }
+    
+    .ad-type:hover {
+        transform: none;
+        border-color: var(--border-neon);
+    }
+    
+    .task-item:hover {
+        transform: none;
+        border-color: var(--border-neon);
+    }
+    
+    .nav-item {
+        min-height: 44px; /* Apple HIG recommendation */
+    }
+    
+    .btn {
+        min-height: 44px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .logo {
+        justify-content: center;
+    }
+    
+    .main-nav {
+        flex-wrap: wrap;
+    }
+    
+    .nav-item {
+        min-width: 20%;
+        font-size: 0.7rem;
+    }
+    
+    .balance-amount-main {
+        font-size: 1.8rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .app-header,
+    .main-nav,
+    .btn,
+    .notification-container {
+        display: none !important;
+    }
+    
+    .app-container {
+        max-width: none;
+        border: none;
+        box-shadow: none;
+    }
+    
+    .main-content {
+        padding: 0;
+    }
+    
+    .page {
+        display: block !important;
+        break-inside: avoid;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .card {
+        background: white;
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
+}
