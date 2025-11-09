@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine RizQ - ইসলামিক রিওয়ার্ড</title>
+    <title>Divine RizQ - হালাল রিযিকের প্ল্যাটফর্ম</title>
+    
+    <!-- Professional Meta Tags -->
+    <meta name="description" content="হালাল উপায়ে ইনকাম করুন - Divine RizQ ইসলামিক রিওয়ার্ড প্ল্যাটফর্ম">
+    <meta name="keywords" content="হালাল ইনকাম, ISLM, ইসলামিক রিওয়ার্ড, বাংলাদেশ">
     
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -11,10 +15,12 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <!-- CSS Files -->
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
     
     <!-- Monetag Ads -->
     <script>
@@ -24,1056 +30,94 @@
             a.async=1;a.src=e;g.parentNode.insertBefore(a,g)
         })(window,document,'script','https://monetag.com/script.js','monetag');
     </script>
-
-    <style>
-        /* Additional inline styles for critical elements */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(160, 32, 240, 0.3);
-            border-top: 4px solid var(--neon-purple);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
-        <div>Divine RizQ লোড হচ্ছে...</div>
+        <div class="loading-text">Divine RizQ প্রস্তুত হচ্ছে...</div>
     </div>
 
-    <div class="app-container" id="appContainer" style="display: none;">
+    <!-- Main App Container -->
+    <div class="app-container" id="appContainer">
         <!-- Header -->
         <header class="app-header">
-            <div class="logo">Divine RizQ</div>
-            <div class="user-balance">
-                <span id="balanceAmount">0.00 ISLM</span>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🌙</span>
+                    <span class="logo-text">Divine RizQ</span>
+                </div>
+                <div class="user-info">
+                    <div class="balance-display">
+                        <span class="balance-amount" id="balanceAmount">0.00 ISLM</span>
+                    </div>
+                </div>
             </div>
         </header>
 
+        <!-- Navigation Tabs -->
+        <nav class="main-nav" id="mainNav">
+            <button class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">ড্যাশবোর্ড</span>
+            </button>
+            <button class="nav-item" data-page="earn">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">আয় করুন</span>
+            </button>
+            <button class="nav-item" data-page="tasks">
+                <span class="nav-icon">✅</span>
+                <span class="nav-text">টাস্ক</span>
+            </button>
+            <button class="nav-item" data-page="referral">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">রেফারেল</span>
+            </button>
+            <button class="nav-item" data-page="withdraw">
+                <span class="nav-icon">🏦</span>
+                <span class="nav-text">উত্তোলন</span>
+            </button>
+        </nav>
+
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content" id="mainContent">
             <!-- Dashboard Page -->
-            <div class="page active" id="dashboard-page">
-                <div class="card">
-                    <div class="balance-display">
-                        <div class="balance-label">আপনার ব্যালেন্স</div>
-                        <div class="balance-amount" id="mainBalance">0.00 ISLM</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>দ্রুত একশন</h3>
-                    <button class="btn btn-primary" id="watchAdBtn">এড দেখুন (+0.02 ISLM)</button>
-                    <button class="btn btn-secondary" id="dailyRewardBtn">দৈনিক রিওয়ার্ড</button>
-                    <button class="btn btn-secondary" id="tasksBtn">টাস্ক করুন</button>
-                    <button class="btn btn-secondary" id="referralBtn">বন্ধুকে আমন্ত্রণ করুন</button>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalEarned">0.00</div>
-                        <div class="stat-label">মোট আয়</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="activeDays">0</div>
-                        <div class="stat-label">সক্রিয় দিন</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="completedTasks">0</div>
-                        <div class="stat-label">সম্পূর্ণ টাস্ক</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="referralCount">0</div>
-                        <div class="stat-label">রেফারেল</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>সর্বশেষ কার্যক্রম</h3>
-                    <div id="recentActivity">
-                        <div class="activity-item">
-                            <span>এখনই শুরু করুন!</span>
-                            <span class="activity-time">এখন</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="page active" id="dashboardPage">
+                <!-- Dashboard content will be loaded here -->
             </div>
 
-            <!-- Ads Page -->
-            <div class="page" id="ads-page">
-                <div class="card">
-                    <h3>এড দেখে ইনকাম করুন</h3>
-                    <p>প্রতি এড দেখলে পাবেন 0.02 ISLM</p>
-                    
-                    <div class="ad-options">
-                        <button class="btn btn-primary ad-btn" data-type="interstitial">
-                            <span>📺</span>
-                            <span>ফুল স্ক্রিন এড</span>
-                            <span class="ad-reward">+0.02 ISLM</span>
-                        </button>
-                        <button class="btn btn-primary ad-btn" data-type="popup">
-                            <span>🪟</span>
-                            <span>পপআপ এড</span>
-                            <span class="ad-reward">+0.02 ISLM</span>
-                        </button>
-                        <button class="btn btn-secondary ad-btn" data-type="auto">
-                            <span>🔄</span>
-                            <span>অটো এড</span>
-                            <span class="ad-reward">+0.02 ISLM</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>এড দেখার নিয়ম</h3>
-                    <div class="info-box">
-                        <ul>
-                            <li>এড সম্পূর্ণ দেখতে হবে</li>
-                            <li>প্রতি এড-এ 0.02 ISLM পাবেন</li>
-                            <li>দিনে যত খুশি এড দেখতে পারবেন</li>
-                            <li>কোনো সাবস্ক্রিপশন লাগবে না</li>
-                        </ul>
-                    </div>
-                </div>
+            <!-- Earn Page -->
+            <div class="page" id="earnPage">
+                <!-- Earn content will be loaded here -->
             </div>
 
             <!-- Tasks Page -->
-            <div class="page" id="tasks-page">
-                <div class="card">
-                    <h3>টাস্ক করুন, ইনকাম করুন</h3>
-                    <p>টাস্ক সম্পূর্ণ করে বেশি ইনকাম করুন</p>
-                    
-                    <div id="tasksContainer">
-                        <div class="task-item">
-                            <div class="task-info">
-                                <div class="task-title">Visit Our Website</div>
-                                <div class="task-description">Visit our website for 30 seconds</div>
-                                <div class="task-reward">Reward: 0.30 ISLM</div>
-                            </div>
-                            <button class="btn btn-primary" data-task-id="task_001">
-                                Start Task
-                            </button>
-                        </div>
-                        
-                        <div class="task-item">
-                            <div class="task-info">
-                                <div class="task-title">Follow on Telegram</div>
-                                <div class="task-description">Follow our Telegram channel</div>
-                                <div class="task-reward">Reward: 0.50 ISLM</div>
-                            </div>
-                            <button class="btn btn-primary" data-task-id="task_002">
-                                Start Task
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Daily Reward Page -->
-            <div class="page" id="daily-page">
-                <div class="card">
-                    <div class="reward-card">
-                        <div class="reward-icon">🎁</div>
-                        <div class="reward-amount">0.50 ISLM</div>
-                        <div class="reward-message" id="rewardMessage">দৈনিক রিওয়ার্ড উপলব্ধ!</div>
-                        <button class="btn btn-primary" id="claimRewardBtn">রিওয়ার্ড নিন</button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>দৈনিক রিওয়ার্ড নিয়ম</h3>
-                    <div class="info-box">
-                        <ul>
-                            <li>প্রথম ৭ দিন: 0.50 ISLM প্রতিদিন</li>
-                            <li>২৪ ঘন্টায় একবার ক্লেম করতে পারবেন</li>
-                            <li>দিন ৮ থেকে: বিশেষ অফার</li>
-                            <li>নিয়মিত আসুন, বেশি ইনকাম করুন</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>প্রথম ৭ দিন</span>
-                            <span id="daysProgress">0/7 দিন</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="page" id="tasksPage">
+                <!-- Tasks content will be loaded here -->
             </div>
 
             <!-- Referral Page -->
-            <div class="page" id="referral-page">
-                <div class="card">
-                    <h3>বন্ধুকে আমন্ত্রণ করুন</h3>
-                    <p>বন্ধু রেজিস্টার করলে পাবেন তার প্রথম উত্তোলনের 10%</p>
-                    
-                    <div class="referral-link-container">
-                        <input type="text" id="referralLink" readonly class="referral-input" value="লোড হচ্ছে...">
-                        <button class="btn btn-primary" id="copyLinkBtn">লিংক কপি করুন</button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>আপনার রেফারেল স্ট্যাটস</h3>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalReferrals">0</div>
-                            <div class="stat-label">মোট রেফারেল</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="referralEarnings">0.00</div>
-                            <div class="stat-label">রেফারেল আয়</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>রেফারেল সিস্টেম</h3>
-                    <div class="info-box">
-                        <h4>💰 কিভাবে কাজ করে:</h4>
-                        <ul>
-                            <li>বন্ধু আপনার লিংক দিয়ে রেজিস্টার করবে</li>
-                            <li>বন্ধুর প্রথম উত্তোলনের 10% পাবেন</li>
-                            <li>কোনো লিমিট নেই - যত খুশি বন্ধু রেফার করতে পারবেন</li>
-                            <li>রেফারেল আয় সাথে সাথে যোগ হবে</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="page" id="referralPage">
+                <!-- Referral content will be loaded here -->
             </div>
 
             <!-- Withdraw Page -->
-            <div class="page" id="withdraw-page">
-                <div class="card">
-                    <h3>টাকা উত্তোলন করুন</h3>
-                    
-                    <div class="info-box">
-                        <h4>⚠️ শর্তাবলী:</h4>
-                        <ul>
-                            <li>সর্বনিম্ন উত্তোলন: <strong>28 ISLM</strong></li>
-                            <li>উত্তোলন চার্জ: <strong>2%</strong></li>
-                            <li>প্রথম উত্তোলনে রেফারেল বোনাস: <strong>10%</strong></li>
-                            <li>প্রসেসিং সময়: ২৪-৪৮ ঘন্টা</li>
-                        </ul>
-                        <p style="color: var(--warning); margin-top: 10px;">
-                            ⚠️ যদি ফোলো/আনফোলো চিট করেন, আপনার ইনকাম হারাম হয়ে যাবে
-                        </p>
-                    </div>
-
-                    <form id="withdrawForm">
-                        <div class="form-group">
-                            <label>পরিমাণ (ISLM)</label>
-                            <input type="number" id="withdrawAmount" min="28" step="0.01" placeholder="28" required>
-                            <div class="form-hint">সর্বনিম্ন: 28 ISLM</div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>পদ্ধতি নির্বাচন করুন</label>
-                            <select id="withdrawMethod" required>
-                                <option value="">পদ্ধতি নির্বাচন করুন</option>
-                                <option value="bKash">bKash (বিকাশ)</option>
-                                <option value="Nagad">Nagad (নগদ)</option>
-                                <option value="BTC">Bitcoin (বিটকয়েন)</option>
-                                <option value="ETH">Ethereum (ইথেরিয়াম)</option>
-                                <option value="ISLM_TON">ISLM on TON Blockchain</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="walletField" style="display: none;">
-                            <label id="walletLabel">ওয়ালেট এড্রেস / নাম্বার</label>
-                            <input type="text" id="walletAddress" placeholder="আপনার এড্রেস বা নাম্বার লিখুন" required>
-                        </div>
-                        
-                        <div class="calculation-box">
-                            <div class="calc-row">
-                                <span>উত্তোলন পরিমাণ:</span>
-                                <span id="calcAmount">0.00 ISLM</span>
-                            </div>
-                            <div class="calc-row">
-                                <span>চার্জ (2%):</span>
-                                <span id="calcFee">0.00 ISLM</span>
-                            </div>
-                            <div class="calc-row total">
-                                <span>প্রাপ্ত পরিমাণ:</span>
-                                <span id="calcTotal">0.00 ISLM</span>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary" id="submitWithdrawBtn">
-                            উত্তোলন রিকোয়েস্ট করুন
-                        </button>
-                    </form>
-                </div>
-
-                <div class="card">
-                    <h3>আপনার উত্তোলন হিস্ট্রি</h3>
-                    <div id="withdrawHistory">
-                        <div class="history-item">
-                            <span>কোনো উত্তোলন নেই</span>
-                            <span class="history-status">-</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="page" id="withdrawPage">
+                <!-- Withdraw content will be loaded here -->
             </div>
         </main>
 
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" data-page="dashboard">
-                <span>🏠</span>
-                <span>হোম</span>
-            </button>
-            <button class="nav-btn" data-page="ads">
-                <span>📺</span>
-                <span>এড</span>
-            </button>
-            <button class="nav-btn" data-page="tasks">
-                <span>✅</span>
-                <span>টাস্ক</span>
-            </button>
-            <button class="nav-btn" data-page="daily">
-                <span>🎁</span>
-                <span>দৈনিক</span>
-            </button>
-            <button class="nav-btn" data-page="referral">
-                <span>👥</span>
-                <span>রেফার</span>
-            </button>
-            <button class="nav-btn" data-page="withdraw">
-                <span>💰</span>
-                <span>উইথড্র</span>
-            </button>
-        </nav>
+        <!-- Notification System -->
+        <div class="notification-container" id="notificationContainer"></div>
     </div>
 
-    <!-- Firebase Configuration -->
-    <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyB_-PefTn0NVzSJpkAS0o71zfPCb5Yhkr4",
-            authDomain: "divine-rizq.firebaseapp.com",
-            projectId: "divine-rizq",
-            storageBucket: "divine-rizq.firebasestorage.app",
-            messagingSenderId: "864023029515",
-            appId: "1:864023029515:web:9f1dc6e02d259910c6a40e",
-            measurementId: "G-33XFBDN1L6"
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        console.log("🔥 Firebase Connected Successfully!");
-        window.db = db;
-        window.firebase = firebase;
-    </script>
-
-    <!-- Main App Script -->
-    <script>
-        // Main Application Logic
-        class DivineRizqApp {
-            constructor() {
-                this.currentUser = null;
-                this.userData = null;
-                this.tg = null;
-                this.demoMode = false;
-                this.init();
-            }
-
-            init() {
-                console.log('🚀 Divine RizQ App Initializing...');
-                
-                // Hide loading screen after 2 seconds
-                setTimeout(() => {
-                    this.hideLoadingScreen();
-                }, 2000);
-                
-                // Initialize Telegram WebApp
-                this.initTelegram();
-                
-                // Setup event listeners
-                this.setupEventListeners();
-                
-                // Load user data from Firebase
-                this.loadUserData();
-            }
-
-            hideLoadingScreen() {
-                const loadingScreen = document.getElementById('loadingScreen');
-                const appContainer = document.getElementById('appContainer');
-                
-                if (loadingScreen && appContainer) {
-                    loadingScreen.style.display = 'none';
-                    appContainer.style.display = 'block';
-                }
-            }
-
-            initTelegram() {
-                try {
-                    this.tg = window.Telegram.WebApp;
-                    
-                    if (this.tg && this.tg.initDataUnsafe.user) {
-                        this.tg.expand();
-                        this.tg.enableClosingConfirmation();
-                        console.log('✅ Telegram WebApp initialized');
-                        document.body.classList.add('telegram-app');
-                        return true;
-                    } else {
-                        throw new Error('No Telegram user data');
-                    }
-                } catch (error) {
-                    console.log('🌐 Running in Browser - Demo mode');
-                    this.demoMode = true;
-                    document.body.classList.add('demo-mode');
-                    return false;
-                }
-            }
-
-            async loadUserData() {
-                if (this.demoMode) {
-                    this.loadDemoData();
-                    return;
-                }
-
-                try {
-                    const telegramUser = this.tg.initDataUnsafe.user;
-                    const userId = `user_${telegramUser.id}`;
-                    const username = telegramUser.username || 
-                                   `${telegramUser.first_name}${telegramUser.last_name ? ' ' + telegramUser.last_name : ''}`;
-
-                    // Check for referral
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const refCode = urlParams.get('ref');
-
-                    const userDoc = await db.collection('users').doc(userId).get();
-
-                    if (userDoc.exists) {
-                        // Existing user
-                        this.userData = userDoc.data();
-                        console.log('✅ User data loaded:', this.userData);
-                    } else {
-                        // New user - create document
-                        this.userData = {
-                            uid: userId,
-                            username: username,
-                            balance: 0.0,
-                            joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            dailyRewardClaimed: false,
-                            daysFromJoin: 0,
-                            referral: refCode || "none",
-                            totalEarned: 0.0,
-                            completedTasks: [],
-                            totalReferrals: 0,
-                            referralEarnings: 0.0,
-                            lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                        };
-
-                        await db.collection('users').doc(userId).set(this.userData);
-                        console.log('✅ New user created:', this.userData);
-                        
-                        // Process referral if any
-                        if (refCode && refCode !== "none") {
-                            this.processReferral(refCode, userId);
-                        }
-                    }
-
-                    this.updateUI();
-                } catch (error) {
-                    console.error('❌ Error loading user data:', error);
-                    this.loadDemoData();
-                }
-            }
-
-            async processReferral(referrerId, newUserId) {
-                try {
-                    // Add referral to referrer's count
-                    await db.collection('users').doc(referrerId).update({
-                        totalReferrals: firebase.firestore.FieldValue.increment(1)
-                    });
-                    console.log(`✅ Referral processed: ${newUserId} referred by ${referrerId}`);
-                } catch (error) {
-                    console.error('Error processing referral:', error);
-                }
-            }
-
-            loadDemoData() {
-                this.userData = {
-                    balance: 12.50,
-                    totalEarned: 25.75,
-                    daysFromJoin: 3,
-                    dailyRewardClaimed: false,
-                    username: 'Demo User',
-                    completedTasks: ['task_001'],
-                    totalReferrals: 2,
-                    referralEarnings: 1.50
-                };
-                this.updateUI();
-                this.showDemoNotice();
-            }
-
-            setupEventListeners() {
-                // Navigation
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const page = e.currentTarget.dataset.page;
-                        this.switchPage(page);
-                    });
-                });
-
-                // Quick action buttons
-                document.getElementById('watchAdBtn').addEventListener('click', () => {
-                    this.watchAd();
-                });
-
-                document.getElementById('dailyRewardBtn').addEventListener('click', () => {
-                    this.switchPage('daily');
-                });
-
-                document.getElementById('tasksBtn').addEventListener('click', () => {
-                    this.switchPage('tasks');
-                    this.loadTasks();
-                });
-
-                document.getElementById('referralBtn').addEventListener('click', () => {
-                    this.switchPage('referral');
-                });
-
-                // Ad buttons
-                document.querySelectorAll('.ad-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const type = e.currentTarget.dataset.type;
-                        this.showAd(type);
-                    });
-                });
-
-                // Daily reward
-                document.getElementById('claimRewardBtn').addEventListener('click', () => {
-                    this.claimDailyReward();
-                });
-
-                // Referral
-                document.getElementById('copyLinkBtn').addEventListener('click', () => {
-                    this.copyReferralLink();
-                });
-
-                // Withdraw form
-                document.getElementById('withdrawForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.submitWithdrawal();
-                });
-
-                // Withdraw amount calculation
-                document.getElementById('withdrawAmount').addEventListener('input', (e) => {
-                    this.calculateWithdrawal(e.target.value);
-                });
-
-                // Withdraw method change
-                document.getElementById('withdrawMethod').addEventListener('change', (e) => {
-                    this.toggleWalletField(e.target.value);
-                });
-
-                // Task buttons
-                document.addEventListener('click', (e) => {
-                    if (e.target.matches('[data-task-id]')) {
-                        const taskId = e.target.dataset.taskId;
-                        this.startTask(taskId);
-                    }
-                });
-            }
-
-            switchPage(pageId) {
-                // Hide all pages
-                document.querySelectorAll('.page').forEach(page => {
-                    page.classList.remove('active');
-                });
-
-                // Show target page
-                document.getElementById(`${pageId}-page`).classList.add('active');
-
-                // Update nav buttons
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
-
-                // Page specific setup
-                this.setupPage(pageId);
-            }
-
-            setupPage(pageId) {
-                switch(pageId) {
-                    case 'referral':
-                        this.setupReferralPage();
-                        break;
-                    case 'withdraw':
-                        this.setupWithdrawPage();
-                        break;
-                    case 'daily':
-                        this.setupDailyPage();
-                        break;
-                }
-            }
-
-            setupReferralPage() {
-                if (this.demoMode) {
-                    document.getElementById('referralLink').value = 'https://t.me/your_bot?start=ref_demo';
-                } else {
-                    const referralLink = `${window.location.origin}${window.location.pathname}?ref=${this.tg.initDataUnsafe.user.id}`;
-                    document.getElementById('referralLink').value = referralLink;
-                }
-                
-                // Update referral stats
-                document.getElementById('totalReferrals').textContent = this.userData.totalReferrals || 0;
-                document.getElementById('referralEarnings').textContent = (this.userData.referralEarnings || 0).toFixed(2);
-            }
-
-            setupWithdrawPage() {
-                this.calculateWithdrawal(28); // Default minimum
-                this.toggleWalletField('');
-            }
-
-            setupDailyPage() {
-                const days = this.userData.daysFromJoin || 0;
-                const progress = Math.min((days / 7) * 100, 100);
-                
-                document.getElementById('daysProgress').textContent = `${days}/7 দিন`;
-                document.getElementById('progressFill').style.width = `${progress}%`;
-            }
-
-            toggleWalletField(method) {
-                const walletField = document.getElementById('walletField');
-                const walletLabel = document.getElementById('walletLabel');
-                const walletInput = document.getElementById('walletAddress');
-                
-                if (method) {
-                    walletField.style.display = 'block';
-                    
-                    switch(method) {
-                        case 'bKash':
-                        case 'Nagad':
-                            walletLabel.textContent = 'মোবাইল নাম্বার';
-                            walletInput.placeholder = '01XXXXXXXXX';
-                            break;
-                        default:
-                            walletLabel.textContent = 'ওয়ালেট এড্রেস';
-                            walletInput.placeholder = 'আপনার ওয়ালেট এড্রেস লিখুন';
-                    }
-                } else {
-                    walletField.style.display = 'none';
-                }
-            }
-
-            calculateWithdrawal(amount) {
-                if (!amount || amount < 28) {
-                    amount = 28;
-                }
-                
-                const fee = amount * 0.02;
-                const total = amount - fee;
-                
-                document.getElementById('calcAmount').textContent = `${parseFloat(amount).toFixed(2)} ISLM`;
-                document.getElementById('calcFee').textContent = `${fee.toFixed(2)} ISLM`;
-                document.getElementById('calcTotal').textContent = `${total.toFixed(2)} ISLM`;
-            }
-
-            async loadTasks() {
-                try {
-                    // For demo, we'll use static tasks
-                    const tasks = [
-                        {
-                            id: 'task_001',
-                            title: 'Visit Our Website',
-                            description: 'Visit our website for 30 seconds',
-                            reward: 0.30,
-                            link: 'https://example.com'
-                        },
-                        {
-                            id: 'task_002', 
-                            title: 'Follow on Telegram',
-                            description: 'Follow our Telegram channel',
-                            reward: 0.50,
-                            link: 'https://t.me/your_channel'
-                        }
-                    ];
-
-                    const tasksContainer = document.getElementById('tasksContainer');
-                    let tasksHTML = '';
-
-                    tasks.forEach(task => {
-                        const isCompleted = this.userData.completedTasks && 
-                                          this.userData.completedTasks.includes(task.id);
-
-                        tasksHTML += `
-                            <div class="task-item">
-                                <div class="task-info">
-                                    <div class="task-title">${task.title}</div>
-                                    <div class="task-description">${task.description}</div>
-                                    <div class="task-reward">Reward: ${task.reward} ISLM</div>
-                                </div>
-                                <button class="btn ${isCompleted ? 'btn-secondary' : 'btn-primary'}" 
-                                        data-task-id="${task.id}"
-                                        ${isCompleted ? 'disabled' : ''}>
-                                    ${isCompleted ? 'Completed' : 'Start Task'}
-                                </button>
-                            </div>
-                        `;
-                    });
-
-                    tasksContainer.innerHTML = tasksHTML;
-
-                } catch (error) {
-                    console.error('Error loading tasks:', error);
-                }
-            }
-
-            async startTask(taskId) {
-                this.showNotification('Task started! Complete the task to earn reward.', 'info');
-                
-                // Simulate task completion after 3 seconds
-                setTimeout(() => {
-                    this.completeTask(taskId, 0.30);
-                }, 3000);
-            }
-
-            async completeTask(taskId, reward) {
-                try {
-                    if (this.demoMode) {
-                        this.addBalance(reward, 'Task Reward');
-                        // Mark as completed in demo
-                        if (!this.userData.completedTasks) {
-                            this.userData.completedTasks = [];
-                        }
-                        this.userData.completedTasks.push(taskId);
-                        this.updateUI();
-                        return;
-                    }
-
-                    const userId = `user_${this.tg.initDataUnsafe.user.id}`;
-                    const updatedCompletedTasks = [...(this.userData.completedTasks || []), taskId];
-
-                    await db.collection('users').doc(userId).update({
-                        balance: firebase.firestore.FieldValue.increment(reward),
-                        totalEarned: firebase.firestore.FieldValue.increment(reward),
-                        completedTasks: updatedCompletedTasks,
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    // Update local data
-                    this.userData.balance += reward;
-                    this.userData.totalEarned += reward;
-                    this.userData.completedTasks = updatedCompletedTasks;
-
-                    this.updateUI();
-                    this.showNotification(`Task completed! +${reward} ISLM`, 'success');
-
-                } catch (error) {
-                    console.error('Error completing task:', error);
-                    this.showNotification('Error completing task', 'error');
-                }
-            }
-
-            async watchAd() {
-                if (this.demoMode) {
-                    this.addBalance(0.02, 'Ad Reward');
-                    return;
-                }
-
-                try {
-                    // Show ad using Monetag
-                    if (typeof monetag !== 'undefined' && monetag.show_10076761) {
-                        monetag.show_10076761().then(() => {
-                            this.giveAdReward();
-                        }).catch(error => {
-                            console.error('Ad error:', error);
-                            // Fallback for testing
-                            this.giveAdReward();
-                        });
-                    } else {
-                        // Fallback if Monetag not loaded
-                        this.giveAdReward();
-                    }
-                } catch (error) {
-                    console.error('Ad error:', error);
-                    // Fallback - give reward anyway for testing
-                    this.giveAdReward();
-                }
-            }
-
-            async showAd(type) {
-                this.showNotification(`Showing ${type} ad...`, 'info');
-                
-                // Simulate ad watching
-                setTimeout(() => {
-                    this.giveAdReward();
-                }, 2000);
-            }
-
-            async giveAdReward() {
-                const reward = 0.02;
-                
-                if (this.demoMode) {
-                    this.addBalance(reward, 'Ad Reward');
-                    return;
-                }
-
-                try {
-                    const userId = `user_${this.tg.initDataUnsafe.user.id}`;
-                    
-                    await db.collection('users').doc(userId).update({
-                        balance: firebase.firestore.FieldValue.increment(reward),
-                        totalEarned: firebase.firestore.FieldValue.increment(reward),
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    // Update local data
-                    this.userData.balance += reward;
-                    this.userData.totalEarned += reward;
-
-                    this.updateUI();
-                    this.showNotification(`Ad completed! +${reward} ISLM`, 'success');
-
-                } catch (error) {
-                    console.error('Error updating balance:', error);
-                    this.showNotification('Error updating balance', 'error');
-                }
-            }
-
-            async claimDailyReward() {
-                if (this.userData.dailyRewardClaimed) {
-                    this.showNotification('You have already claimed your daily reward today!', 'warning');
-                    return;
-                }
-
-                if (this.userData.daysFromJoin >= 7) {
-                    this.showNotification('Daily rewards are only available for the first 7 days', 'warning');
-                    return;
-                }
-
-                const reward = 0.50;
-
-                if (this.demoMode) {
-                    this.addBalance(reward, 'Daily Reward');
-                    this.userData.dailyRewardClaimed = true;
-                    this.userData.daysFromJoin = (this.userData.daysFromJoin || 0) + 1;
-                    this.updateUI();
-                    return;
-                }
-
-                try {
-                    const userId = `user_${this.tg.initDataUnsafe.user.id}`;
-                    
-                    await db.collection('users').doc(userId).update({
-                        balance: firebase.firestore.FieldValue.increment(reward),
-                        totalEarned: firebase.firestore.FieldValue.increment(reward),
-                        dailyRewardClaimed: true,
-                        daysFromJoin: firebase.firestore.FieldValue.increment(1),
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    // Update local data
-                    this.userData.balance += reward;
-                    this.userData.totalEarned += reward;
-                    this.userData.dailyRewardClaimed = true;
-                    this.userData.daysFromJoin = (this.userData.daysFromJoin || 0) + 1;
-
-                    this.updateUI();
-                    this.showNotification(`Daily reward claimed! +${reward} ISLM`, 'success');
-
-                } catch (error) {
-                    console.error('Error claiming daily reward:', error);
-                    this.showNotification('Error claiming daily reward', 'error');
-                }
-            }
-
-            updateUI() {
-                if (!this.userData) return;
-
-                // Update balance displays
-                const balance = this.userData.balance.toFixed(2);
-                document.getElementById('balanceAmount').textContent = `${balance} ISLM`;
-                document.getElementById('mainBalance').textContent = `${balance} ISLM`;
-
-                // Update stats
-                document.getElementById('totalEarned').textContent = this.userData.totalEarned.toFixed(2);
-                document.getElementById('activeDays').textContent = this.userData.daysFromJoin || 0;
-                document.getElementById('completedTasks').textContent = this.userData.completedTasks ? this.userData.completedTasks.length : 0;
-                document.getElementById('referralCount').textContent = this.userData.totalReferrals || 0;
-
-                // Update daily reward button
-                const claimBtn = document.getElementById('claimRewardBtn');
-                if (this.userData.dailyRewardClaimed) {
-                    claimBtn.disabled = true;
-                    claimBtn.textContent = 'Already Claimed Today';
-                    document.getElementById('rewardMessage').textContent = 'Come back tomorrow for your next reward!';
-                } else {
-                    claimBtn.disabled = false;
-                    claimBtn.textContent = 'Claim Reward';
-                    document.getElementById('rewardMessage').textContent = 'Daily Reward Available!';
-                }
-
-                // Update daily progress
-                this.setupDailyPage();
-            }
-
-            showDemoNotice() {
-                if (!document.getElementById('demoNotice')) {
-                    const notice = document.createElement('div');
-                    notice.id = 'demoNotice';
-                    notice.className = 'demo-notice';
-                    notice.innerHTML = '🔧 <strong>Demo Mode</strong> - Real functionality works in Telegram with Firebase';
-                    document.querySelector('.main-content').prepend(notice);
-                }
-            }
-
-            addBalance(amount, reason) {
-                this.userData.balance += amount;
-                this.userData.totalEarned += amount;
-                this.updateUI();
-                this.showNotification(`${reason}! +${amount} ISLM`, 'success');
-            }
-
-            copyReferralLink() {
-                const linkInput = document.getElementById('referralLink');
-                linkInput.select();
-                
-                try {
-                    document.execCommand('copy');
-                    this.showNotification('Referral link copied to clipboard! 📋', 'success');
-                } catch (error) {
-                    this.showNotification('Failed to copy link', 'error');
-                }
-            }
-
-            async submitWithdrawal() {
-                const amount = parseFloat(document.getElementById('withdrawAmount').value);
-                const method = document.getElementById('withdrawMethod').value;
-                const walletAddress = document.getElementById('walletAddress').value;
-
-                if (!amount || amount < 28) {
-                    this.showNotification('Minimum withdrawal: 28 ISLM', 'error');
-                    return;
-                }
-
-                if (amount > this.userData.balance) {
-                    this.showNotification('Insufficient balance', 'error');
-                    return;
-                }
-
-                if (!method) {
-                    this.showNotification('Please select withdrawal method', 'error');
-                    return;
-                }
-
-                if (method && !walletAddress) {
-                    this.showNotification('Please enter your wallet address/phone number', 'error');
-                    return;
-                }
-
-                if (this.demoMode) {
-                    this.showNotification(`Withdrawal request submitted! Amount: ${amount} ISLM, Method: ${method}`, 'success');
-                    document.getElementById('withdrawForm').reset();
-                    this.toggleWalletField('');
-                    return;
-                }
-
-                try {
-                    const withdrawalData = {
-                        uid: this.userData.uid,
-                        amount: amount,
-                        method: method,
-                        wallet: walletAddress,
-                        status: 'pending',
-                        fee: amount * 0.02,
-                        netAmount: amount - (amount * 0.02),
-                        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-
-                    await db.collection('withdrawals').add(withdrawalData);
-
-                    // Update user balance
-                    await db.collection('users').doc(this.userData.uid).update({
-                        balance: firebase.firestore.FieldValue.increment(-amount),
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    // Update local data
-                    this.userData.balance -= amount;
-
-                    this.updateUI();
-                    this.showNotification('Withdrawal request submitted successfully!', 'success');
-                    document.getElementById('withdrawForm').reset();
-                    this.toggleWalletField('');
-
-                } catch (error) {
-                    console.error('Error submitting withdrawal:', error);
-                    this.showNotification('Error submitting withdrawal request', 'error');
-                }
-            }
-
-            showNotification(message, type = 'info') {
-                // Remove existing notifications
-                const existing = document.querySelectorAll('.notification');
-                existing.forEach(note => note.remove());
-
-                // Create notification
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                
-                let icon = 'ℹ️';
-                if (type === 'success') icon = '✅';
-                if (type === 'error') icon = '❌';
-                if (type === 'warning') icon = '⚠️';
-
-                notification.innerHTML = `
-                    <span class="notification-icon">${icon}</span>
-                    <span class="notification-message">${message}</span>
-                    <button class="notification-close">&times;</button>
-                `;
-
-                document.body.appendChild(notification);
-
-                // Auto remove after 5 seconds
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.remove();
-                    }
-                }, 5000);
-
-                // Close button
-                notification.querySelector('.notification-close').addEventListener('click', () => {
-                    notification.remove();
-                });
-            }
-        }
-
-        // Initialize app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            window.app = new DivineRizqApp();
-        });
-    </script>
+    <!-- JavaScript Files -->
+    <script src="js/firebase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ads.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/referral.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
