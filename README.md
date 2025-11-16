@@ -1,36 +1,31 @@
-# Divine RizQ - Islamic Rewards Telegram WebApp
+# 🚀 Divine RizQ - হালাল ইনকামের অ্যাপ
 
-একটি হালাল উপায়ে ইনকাম করার Telegram WebApp।
+<div align="center">
 
-## 🌟 Features
-- 📺 এড দেখে ইনকাম
-- 🎁 দৈনিক রিওয়ার্ড
-- 👥 রেফারেল সিস্টেম
-- 💰 টাকা উত্তোলন
-- 📱 সম্পূর্ণ রেস্পন্সিভ
+![Divine RizQ](https://img.shields.io/badge/Divine-RizQ-green)
+![Flutter](https://img.shields.io/badge/Flutter-3.13+-blue)
+![Firebase](https://img.shields.io/badge/Firebase-Backend-orange)
 
-## 🚀 Quick Start
-1. Telegram-এ বটে যান
-2. Web App open করুন
-3. ইনকাম শুরু করুন!
+**টাস্ক করুন, হালাল ইনকাম করুন 💰**
 
-## 📁 Project Structure
-```
-divine-rizq-telegram/
-├── index.html
-├── css/
-│   ├── main.css
-│   └── components.css
-├── js/
-│   ├── app.js
-│   └── demo.js
-└── README.md
-```
+</div>
 
-## 🛠️ Setup
-1. GitHub Pages enable করুন
-2. Telegram bot-এ web app URL সেট করুন
-3. Firebase configuration করুন
+## 📱 ফিচারস
 
-##  Contact:- fakegmlsr@gmail.com
-Developer: Siam
+- ✅ Auto Verified Tasks (কোন Proof লাগবে না)
+- ✅ ৭ ধরনের টাস্ক সিস্টেম
+- ✅ bKash/Nagad/Rocket উইথড্র
+- ✅ রেফারেল সিস্টেম
+- ✅ Firebase Authentication
+- ✅ Real-time Balance
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/siam6988/divine-rizq-telegram .git
+cd divine-rizq-app
+flutter pub get
+
+flutter run
+👨‍💻 Developer
+তোমার নাম - siam
