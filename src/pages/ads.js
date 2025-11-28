@@ -1,305 +1,262 @@
-// Ads Page - যেখানে শুধু টাকা কামাই! 🤑
-export function render() {
+// Ads Page Component
+async function loadAdsPage() {
+    const availableAds = await getAvailableAds();
+    
     return `
-        <div class="page">
-            <div class="page-header">
-                <h1 class="page-title">বিজ্ঞাপন দেখে ইনকাম</h1>
-                <p class="page-subtitle">বসে বসে টাকা কামান! 💰</p>
+        <div class="page active" id="ads-page">
+            <div class="card">
+                <h2 class="card-title">📺 বিজ্ঞাপন দেখে আয় করুন</h2>
+                <p>বিজ্ঞাপন দেখে সহজেই আয় করুন। প্রতিটি বিজ্ঞাপনের জন্য পাবেন 0.5 - 2 ISLM</p>
             </div>
 
-            <!-- Daily Ads Limit -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">📊 আজকের স্ট্যাটাস</h3>
-                    <span class="task-reward" id="adsToday">0/10</span>
+            <!-- Ads Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">${await getTodayAdCount()}</div>
+                    <div class="stat-label">আজকের এড</div>
                 </div>
-                <div class="task-progress">
-                    <div class="progress-bar" id="adsProgress" style="width: 0%"></div>
+                <div class="stat-card">
+                    <div class="stat-value">${await getTotalAdEarnings()} ISLM</div>
+                    <div class="stat-label">এড থেকে আয়</div>
                 </div>
-                <p>আজ আপনি <strong id="adsLeft">10</strong>টি ads দেখতে পারেন</p>
-            </div>
-
-            <!-- Quick Earn Section - Fast Money! ⚡ -->
-            <div class="card">
-                <h3 class="card-title">⚡ কুইক আর্ন</h3>
-                <p>একটি ads দেখেই পেয়ে যান <strong>0.5 ISLM</strong>!</p>
-                <button class="btn" id="quickEarnBtn" style="margin-top: 1rem; width: 100%;">
-                    🎯 এখনই 0.5 ISLM আর্ন করুন
-                </button>
-            </div>
-
-            <!-- Bonus Earn Section - Extra Money! 🎁 -->
-            <div class="card">
-                <h3 class="card-title">🎁 বোনাস আর্ন</h3>
-                <p>বিশেষ ads দেখে পেয়ে যান <strong>1.0 ISLM</strong> বোনাস!</p>
-                <button class="btn btn-secondary" id="bonusEarnBtn" style="margin-top: 1rem; width: 100%;">
-                    🎁 1.0 ISLM বোনাস নিন
-                </button>
-            </div>
-
-            <!-- Auto Ads Section - Passive Income! 🤖 -->
-            <div class="card">
-                <h3 class="card-title">🤖 অটো আর্ন</h3>
-                <p>অটোমেটিক ads দেখে আর্ন করুন (প্রতি ৩০ মিনিটে)</p>
-                <button class="btn btn-outline" id="autoAdsBtn" style="margin-top: 1rem; width: 100%;">
-                    🔄 অটো আর্ন চালু করুন
-                </button>
-            </div>
-
-            <!-- Earnings History -->
-            <div class="card">
-                <h3 class="card-title">💵 আজকের আর্নিং</h3>
-                <div id="todayEarnings">
-                    <p style="text-align: center; color: #666; padding: 1rem;">
-                        আজまだ কোনো আর্নিং নেই
-                    </p>
+                <div class="stat-card">
+                    <div class="stat-value">${await getAvailableAdCount()}</div>
+                    <div class="stat-label">উপলব্ধ এড</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">∞</div>
+                    <div class="stat-label">দৈনিক লিমিট</div>
                 </div>
             </div>
 
-            <!-- Pro Tip -->
-            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                <h3>💡 প্রো টিপ</h3>
-                <p>দিনে ১০টি ads দেখে আর্ন করুন <strong>৫ ISLM</strong> পর্যন্ত!</p>
-                <small>⚡ প্রতিটি ads মাত্র ৩০ সেকেন্ড!</small>
+            <!-- Available Ads -->
+            <div class="card">
+                <h3 class="card-title">🎬 উপলব্ধ বিজ্ঞাপন</h3>
+                <div id="ads-list">
+                    ${await renderAdsList(availableAds)}
+                </div>
+            </div>
+
+            <!-- Ad Rules -->
+            <div class="card">
+                <h3 class="card-title">📝 বিজ্ঞাপন নিয়ম</h3>
+                <ul style="padding-left: 1.5rem;">
+                    <li>বিজ্ঞাপন সম্পূর্ণ দেখতে হবে</li>
+                    <li>Skip করা যাবে না</li>
+                    <li>প্রতিদিন unlimited বিজ্ঞাপন দেখতে পারবেন</li>
+                    <li>প্রতিটি বিজ্ঞাপন 15-30 সেকেন্ডের</li>
+                    <li>Reward automatically যোগ হবে</li>
+                </ul>
+            </div>
+
+            <!-- Monetag Ad Script Integration -->
+            <div class="card text-center">
+                <h3 class="text-green">💫 Premium Ads</h3>
+                <p>নিচের বিজ্ঞাপনগুলো দেখে বেশি আয় করুন</p>
+                <div id="monetag-ads-container" style="min-height: 300px; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border-radius: 10px; margin: 1rem 0;">
+                    <p>Premium ads loading...</p>
+                </div>
+                <button class="btn btn-gold" onclick="loadPremiumAds()">
+                    🔄 Premium Ads লোড করুন
+                </button>
             </div>
         </div>
     `;
 }
 
-export async function afterRender() {
-    await setupAdsEventListeners();
-    await loadAdsStatus();
+async function getAvailableAds() {
+    // Mock data - In production, fetch from Firebase
+    return [
+        {
+            id: 'ad_1',
+            title: 'Mobile App Promotion',
+            description: '15 second video ad about new mobile app',
+            duration: 15,
+            reward: 0.5,
+            type: 'video'
+        },
+        {
+            id: 'ad_2',
+            title: 'E-commerce Website',
+            description: 'Website promotion ad - 20 seconds',
+            duration: 20,
+            reward: 0.8,
+            type: 'video'
+        },
+        {
+            id: 'ad_3',
+            title: 'Product Review',
+            description: 'Watch product review and get reward',
+            duration: 30,
+            reward: 1.2,
+            type: 'video'
+        },
+        {
+            id: 'ad_4',
+            title: 'Brand Awareness',
+            description: '25 second brand promotion video',
+            duration: 25,
+            reward: 1.0,
+            type: 'video'
+        }
+    ];
 }
 
-async function setupAdsEventListeners() {
-    // Quick Earn Button - Fast Cash! 💰
-    document.getElementById('quickEarnBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('quickEarnBtn');
-        btn.innerHTML = '⏳ Ads লোড হচ্ছে...';
-        btn.disabled = true;
-
-        try {
-            await monetagAds.quickEarn();
-            await awardEarnings(0.5, 'quick_earn');
-            btn.innerHTML = '✅ 0.5 ISLM আর্ন করা হয়েছে!';
-            
-            // 2 second পরে reset
-            setTimeout(() => {
-                btn.innerHTML = '🎯 এখনই 0.5 ISLM আর্ন করুন';
-                btn.disabled = false;
-            }, 2000);
-            
-        } catch (error) {
-            btn.innerHTML = '❌ Ads দেখা হয়নি। আবার চেষ্টা করুন!';
-            btn.disabled = false;
-        }
-    });
-
-    // Bonus Earn Button - Extra Cash! 🎁
-    document.getElementById('bonusEarnBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('bonusEarnBtn');
-        btn.innerHTML = '⏳ বোনাস Ads লোড হচ্ছে...';
-        btn.disabled = true;
-
-        try {
-            await monetagAds.bonusEarn();
-            await awardEarnings(1.0, 'bonus_earn');
-            btn.innerHTML = '✅ 1.0 ISLM বোনাস আর্ন করা হয়েছে!';
-            
-            setTimeout(() => {
-                btn.innerHTML = '🎁 1.0 ISLM বোনাস নিন';
-                btn.disabled = false;
-            }, 2000);
-            
-        } catch (error) {
-            btn.innerHTML = '❌ বোনাস Ads দেখা হয়নি';
-            btn.disabled = false;
-        }
-    });
-
-    // Auto Ads Button - Passive Income! 🤖
-    document.getElementById('autoAdsBtn').addEventListener('click', () => {
-        startAutoAds();
-    });
-}
-
-async function awardEarnings(amount, type) {
-    try {
-        const app = window.divineRizQApp;
-        const userId = app?.getUser()?.uid;
-        
-        if (!userId) {
-            alert('⚠️ লগইন করুন প্রথমে!');
-            return;
-        }
-
-        // Update wallet in Firebase
-        const walletRef = doc(db, 'wallet', userId);
-        const walletSnap = await getDoc(walletRef);
-        
-        const currentBalance = walletSnap.exists() ? walletSnap.data().balance : 0;
-        const newBalance = currentBalance + amount;
-        
-        await setDoc(walletRef, {
-            balance: newBalance,
-            lastUpdated: new Date()
-        }, { merge: true });
-
-        // Record earnings history
-        const historyRef = doc(db, 'earningsHistory', `${userId}_${Date.now()}`);
-        await setDoc(historyRef, {
-            userId,
-            amount,
-            type: type,
-            timestamp: new Date()
-        });
-
-        // Update ads count for today
-        await updateAdsCount(userId);
-
-        // Show success message
-        showEarningMessage(amount);
-        
-        // Reload status
-        await loadAdsStatus();
-
-    } catch (error) {
-        console.error('Error awarding earnings:', error);
-        alert('💰 টাকা add করতে সমস্যা! আবার চেষ্টা করুন।');
+async function renderAdsList(ads) {
+    if (ads.length === 0) {
+        return '<p>🚫 এখন কোন বিজ্ঞাপন উপলব্ধ নেই</p>';
     }
-}
 
-function showEarningMessage(amount) {
-    // Create a floating earning message 🎉
-    const message = document.createElement('div');
-    message.innerHTML = `🎉 +${amount} ISLM আর্ন করা হয়েছে!`;
-    message.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #0a5c36, #d4af37);
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 50px;
-        font-weight: bold;
-        font-size: 1.2rem;
-        z-index: 10000;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        animation: bounceIn 0.5s ease-out;
-    `;
-    
-    document.body.appendChild(message);
-    
-    // Remove after 2 seconds
-    setTimeout(() => {
-        message.remove();
-    }, 2000);
-}
-
-async function loadAdsStatus() {
-    try {
-        const app = window.divineRizQApp;
-        const userId = app?.getUser()?.uid;
-        
-        if (!userId) return;
-
-        // Get today's ads count from Firebase
-        const today = new Date().toDateString();
-        const adsRef = doc(db, 'adsHistory', `${userId}_${today}`);
-        const adsSnap = await getDoc(adsRef);
-        
-        const adsCount = adsSnap.exists() ? adsSnap.data().count : 0;
-        const maxAds = 10;
-        const adsLeft = maxAds - adsCount;
-        
-        // Update UI
-        document.getElementById('adsToday').textContent = `${adsCount}/${maxAds}`;
-        document.getElementById('adsLeft').textContent = adsLeft;
-        document.getElementById('adsProgress').style.width = `${(adsCount / maxAds) * 100}%`;
-        
-        // Disable buttons if limit reached
-        if (adsCount >= maxAds) {
-            document.getElementById('quickEarnBtn').disabled = true;
-            document.getElementById('bonusEarnBtn').disabled = true;
-            document.getElementById('quickEarnBtn').innerHTML = '❌ আজকের লিমিট শেষ!';
-            document.getElementById('bonusEarnBtn').innerHTML = '❌ আগামীকাল আবার চেষ্টা করুন!';
-        }
-        
-        // Load today's earnings
-        await loadTodayEarnings(userId);
-
-    } catch (error) {
-        console.error('Error loading ads status:', error);
-    }
-}
-
-async function updateAdsCount(userId) {
-    const today = new Date().toDateString();
-    const adsRef = doc(db, 'adsHistory', `${userId}_${today}`);
-    const adsSnap = await getDoc(adsRef);
-    
-    const currentCount = adsSnap.exists() ? adsSnap.data().count : 0;
-    const newCount = currentCount + 1;
-    
-    await setDoc(adsRef, {
-        count: newCount,
-        date: today,
-        lastUpdated: new Date()
-    }, { merge: true });
-}
-
-async function loadTodayEarnings(userId) {
-    try {
-        const today = new Date().toDateString();
-        const earningsRef = collection(db, 'earningsHistory');
-        const q = query(
-            earningsRef, 
-            where('userId', '==', userId),
-            where('timestamp', '>=', new Date(today))
-        );
-        
-        const snapshot = await getDocs(q);
-        const todayEarnings = snapshot.docs.map(doc => doc.data());
-        
-        const totalEarnings = todayEarnings.reduce((sum, earning) => sum + earning.amount, 0);
-        
-        document.getElementById('todayEarnings').innerHTML = `
-            <div style="text-align: center; padding: 1rem;">
-                <div style="font-size: 2rem; font-weight: bold; color: var(--secondary-gold);">
-                    ${totalEarnings.toFixed(2)} ISLM
+    let html = '';
+    ads.forEach(ad => {
+        html += `
+            <div class="task-card">
+                <div class="task-header">
+                    <div class="task-title">${ad.title}</div>
+                    <div class="task-reward">+${ad.reward} ISLM</div>
                 </div>
-                <p>আজকের মোট আর্নিং</p>
+                
+                <div class="task-description">
+                    ${ad.description}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <small><strong>সময়:</strong> ${ad.duration} সেকেন্ড</small>
+                    <small><strong>ধরণ:</strong> ${ad.type === 'video' ? 'ভিডিও' : 'ব্যানার'}</small>
+                </div>
+                
+                <div class="text-center mt-1">
+                    <button class="btn btn-gold" onclick="watchAd('${ad.id}')">
+                        📺 বিজ্ঞাপন দেখুন
+                    </button>
+                </div>
             </div>
         `;
+    });
+    return html;
+}
+
+async function getTodayAdCount() {
+    const user = window.currentUser;
+    if (!user) return 0;
+    
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         
+        const snapshot = await db.collection('activities')
+            .where('userId', '==', user.uid)
+            .where('type', '==', 'ad_reward')
+            .where('timestamp', '>=', today)
+            .get();
+        
+        return snapshot.size;
     } catch (error) {
-        console.error('Error loading today earnings:', error);
+        return 0;
     }
 }
 
-function startAutoAds() {
-    const btn = document.getElementById('autoAdsBtn');
-    btn.innerHTML = '🤖 অটো আর্ন চালু... (৩০ মিনিট পর ads)';
-    btn.disabled = true;
+async function getTotalAdEarnings() {
+    const user = window.currentUser;
+    if (!user) return 0;
     
-    // Schedule auto ads every 30 minutes
-    setInterval(async () => {
-        try {
-            await monetagAds.showInAppInterstitial();
-            await awardEarnings(0.25, 'auto_earn');
-        } catch (error) {
-            console.log('Auto ad skipped or failed');
-        }
-    }, 30 * 60 * 1000); // 30 minutes
+    try {
+        const snapshot = await db.collection('activities')
+            .where('userId', '==', user.uid)
+            .where('type', '==', 'ad_reward')
+            .get();
+        
+        let total = 0;
+        snapshot.forEach(doc => {
+            total += doc.data().reward || 0;
+        });
+        return total;
+    } catch (error) {
+        return 0;
+    }
+}
+
+async function getAvailableAdCount() {
+    const ads = await getAvailableAds();
+    return ads.length;
+}
+
+async function watchAd(adId) {
+    const user = window.currentUser;
+    if (!user) {
+        alert('লগইন প্রয়োজন');
+        return;
+    }
     
-    // Show first ad after 1 minute
+    // Mock ad watching process
+    const ad = (await getAvailableAds()).find(a => a.id === adId);
+    if (!ad) return;
+    
+    // Show ad watching screen
+    document.getElementById('ads-page').innerHTML = `
+        <div class="card text-center">
+            <h2 class="text-green">📺 বিজ্ঞাপন দেখছেন</h2>
+            <div style="background: #000; color: white; padding: 2rem; border-radius: 10px; margin: 1rem 0;">
+                <h3>${ad.title}</h3>
+                <p>বিজ্ঞাপন চলছে... ${ad.duration} সেকেন্ড</p>
+                <div class="loader" style="margin: 1rem auto;"></div>
+            </div>
+            <p>দয়া করে বিজ্ঞাপনটি সম্পূর্ণ দেখুন</p>
+            <button class="btn" onclick="cancelAdWatch()" style="background: #dc3545;">
+                ❌ বাতিল করুন
+            </button>
+        </div>
+    `;
+    
+    // Simulate ad completion after duration
     setTimeout(async () => {
-        try {
-            await monetagAds.showInAppInterstitial();
-            await awardEarnings(0.25, 'auto_earn');
-        } catch (error) {
-            console.log('First auto ad failed');
-        }
-    }, 60000);
+        await completeAdWatch(ad);
+    }, ad.duration * 1000);
+}
+
+async function completeAdWatch(ad) {
+    const user = window.currentUser;
+    
+    try {
+        // Update user balance
+        await updateUserBalance(user.uid, ad.reward, 'ad_reward');
+        
+        // Add activity
+        await db.collection('activities').add({
+            userId: user.uid,
+            title: `বিজ্ঞাপন: ${ad.title}`,
+            reward: ad.reward,
+            type: 'ad_reward',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Show success message
+        alert(`🎉 ${ad.reward} ISLM পেয়েছেন! বিজ্ঞাপন দেখার জন্য ধন্যবাদ।`);
+        window.navigateTo('ads');
+        
+    } catch (error) {
+        console.error('Error completing ad watch:', error);
+        alert('বিজ্ঞাপন reward দিতে সমস্যা হচ্ছে।');
+    }
+}
+
+function cancelAdWatch() {
+    if (confirm('বিজ্ঞাপন দেখানো বাতিল করবেন? আপনি reward পাবেন না।')) {
+        window.navigateTo('ads');
+    }
+}
+
+function loadPremiumAds() {
+    // Monetag ad integration
+    const container = document.getElementById('monetag-ads-container');
+    container.innerHTML = `
+        <div style="text-align: center;">
+            <h4>Premium Ads</h4>
+            <p>এই বিভাগে Monetag এর premium ads show হবে</p>
+            <small>Ad integration code এখানে যোগ করতে হবে</small>
+        </div>
+    `;
+    
+    // In production, add Monetag script here
+    console.log('Loading premium ads...');
 }
