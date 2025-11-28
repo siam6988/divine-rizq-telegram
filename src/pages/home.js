@@ -1,215 +1,189 @@
 // Home Page Component
-// এই ফাইলে হোম পেজের UI এবং functionality ইমপ্লিমেন্ট করা হয়েছে
-
-import { apiService } from '../utils/api.js';
-import { monetagAds } from '../utils/api.js';
-
-export function render() {
+async function loadHomePage() {
+    const user = window.currentUser;
+    let userData = {};
+    
+    if (user) {
+        userData = await getUserData(user.uid);
+    }
+    
     return `
-        <div class="page">
-            <div class="page-header">
-                <h1 class="page-title">Divine RizQ</h1>
-                <p class="page-subtitle">আপনার রিজিক বৃদ্ধির মাধ্যম</p>
+        <div class="page active" id="home-page">
+            <div class="text-center mb-2">
+                <h1 class="text-green">🕌 Divine RizQ</h1>
+                <p class="text-gold">হালাল আয়ের ইসলামিক প্ল্যাটফর্ম</p>
             </div>
 
             <!-- User Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="balance">0.00 ISLM</div>
-                    <div class="stat-label">ব্যালেন্স</div>
+                    <div class="stat-value">${userData.balance || 0} ISLM</div>
+                    <div class="stat-label">বর্তমান ব্যালেন্স</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="completedTasks">0</div>
+                    <div class="stat-value">${userData.totalEarned || 0} ISLM</div>
+                    <div class="stat-label">মোট আয়</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${userData.completedTasks || 0}</div>
                     <div class="stat-label">সম্পন্ন টাস্ক</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="referralCount">0</div>
+                    <div class="stat-value">${userData.referralCount || 0}</div>
                     <div class="stat-label">রেফারেল</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="dailyReward">0</div>
-                    <div class="stat-label">দৈনিক রিওয়ার্ড</div>
                 </div>
             </div>
 
             <!-- Quick Actions -->
             <div class="card">
                 <h3 class="card-title">দ্রুত একশন</h3>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
-                    <button class="btn" onclick="router.navigate('#tasks')">
-                        টাস্ক করুন
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <button class="btn btn-gold" onclick="window.navigateTo('tasks')">
+                        📋 টাস্ক করুন
                     </button>
-                    <button class="btn btn-secondary" onclick="router.navigate('#ads')">
-                        বিজ্ঞাপন দেখুন
+                    <button class="btn btn-gold" onclick="window.navigateTo('ads')">
+                        📺 এড দেখুন
                     </button>
-                    <button class="btn btn-outline" onclick="router.navigate('#referral')">
-                        রেফারেল দিন
+                    <button class="btn" onclick="window.navigateTo('referral')">
+                        👥 রেফারেল দিন
                     </button>
-                    <button class="btn btn-outline" onclick="router.navigate('#withdraw')">
-                        উত্তোলন করুন
+                    <button class="btn" onclick="window.navigateTo('withdraw')">
+                        💳 উত্তোলন করুন
                     </button>
                 </div>
             </div>
 
-            <!-- Daily Reward Section -->
+            <!-- Daily Reward -->
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">দৈনিক রিওয়ার্ড</h3>
-                    <span id="rewardStatus" class="task-reward">প্রাপ্তি</span>
+                <h3 class="card-title">📅 দৈনিক রিওয়ার্ড</h3>
+                <div id="daily-reward-status">
+                    ${await getDailyRewardStatus()}
                 </div>
-                <div class="task-progress">
-                    <div class="progress-bar" id="rewardProgress" style="width: 0%"></div>
-                </div>
-                <p>লগইন করুন ৭ দিন ধরে এবং আনলক করুন বিশেষ রিওয়ার্ড!</p>
-                <button class="btn" id="claimRewardBtn" style="margin-top: 1rem;">
-                    রিওয়ার্ড নিন
+                <button class="btn btn-block mt-1" onclick="claimDailyReward()" id="daily-reward-btn">
+                    দৈনিক রিওয়ার্ড নিন
                 </button>
             </div>
 
-            <!-- Recent Activity -->
+            <!-- Recent Activities -->
             <div class="card">
-                <h3 class="card-title">সাম্প্রতিক এক্টিভিটি</h3>
-                <div id="recentActivity">
-                    <p style="text-align: center; color: #666; padding: 2rem;">
-                        কোনো এক্টিভিটি নেই
-                    </p>
+                <h3 class="card-title">🔄 সাম্প্রতিক একটিভিটি</h3>
+                <div id="recent-activities">
+                    ${await getRecentActivities()}
+                </div>
+            </div>
+
+            <!-- App Info -->
+            <div class="card text-center">
+                <h3 class="text-green">💫 Divine RizQ সম্পর্কে</h3>
+                <p>হালাল উপায়ে আয় করুন, ইসলামিক মূল্যবোধ নিয়ে এগিয়ে যান। টাস্ক সম্পন্ন করুন, এড দেখুন এবং রেফারেল দিয়ে আয় করুন।</p>
+                <div class="mt-1">
+                    <small class="text-gold">শুরু করেছেন: ${userData.joinedAt ? new Date(userData.joinedAt.toDate()).toLocaleDateString('bn-BD') : 'আজ'}</small>
                 </div>
             </div>
         </div>
     `;
 }
 
-export async function afterRender() {
-    await loadUserStats();
-    await setupEventListeners();
-    await loadRecentActivity();
-}
-
-async function loadUserStats() {
+async function getUserData(uid) {
     try {
-        const app = window.divineRizQApp;
-        const userId = app?.getUser()?.uid;
-        
-        if (!userId) {
-            // Redirect to login if not authenticated
-            router.navigate('#login');
-            return;
-        }
-
-        // Load wallet balance
-        const walletData = await apiService.getWalletBalance(userId);
-        document.getElementById('balance').textContent = `${walletData.balance || '0.00'} ISLM`;
-
-        // Load task statistics
-        const taskProgress = await apiService.getTaskProgress(userId);
-        const completedTasks = taskProgress.filter(task => task.status === 'completed').length;
-        document.getElementById('completedTasks').textContent = completedTasks;
-
-        // Load referral data
-        const referralData = await apiService.getReferralData(userId);
-        document.getElementById('referralCount').textContent = referralData.count || 0;
-
-        // Load daily reward status
-        updateDailyRewardStatus();
-
+        const doc = await db.collection('users').doc(uid).get();
+        return doc.exists ? doc.data() : {};
     } catch (error) {
-        console.error('Error loading user stats:', error);
+        console.error('Error getting user data:', error);
+        return {};
     }
 }
 
-async function setupEventListeners() {
-    // Daily reward claim button
-    document.getElementById('claimRewardBtn').addEventListener('click', claimDailyReward);
+async function getDailyRewardStatus() {
+    const user = window.currentUser;
+    if (!user) return '<p>লগইন প্রয়োজন</p>';
+    
+    try {
+        const today = new Date().toDateString();
+        const rewardDoc = await db.collection('dailyRewards').doc(user.uid).get();
+        
+        if (rewardDoc.exists && rewardDoc.data().lastClaim === today) {
+            return '<p class="text-green">✅ আজকের রিওয়ার্ড already collected!</p>';
+        }
+        
+        return '<p>🎁 আজকের দৈনিক রিওয়ার্ড উপলব্ধ: <strong>2 ISLM</strong></p>';
+    } catch (error) {
+        return '<p>রিওয়ার্ড status check করতে সমস্যা হচ্ছে</p>';
+    }
+}
+
+async function getRecentActivities() {
+    const user = window.currentUser;
+    if (!user) return '<p>লগইন প্রয়োজন</p>';
+    
+    try {
+        const activities = await db.collection('activities')
+            .where('userId', '==', user.uid)
+            .orderBy('timestamp', 'desc')
+            .limit(5)
+            .get();
+        
+        if (activities.empty) {
+            return '<p>এখনও কোন activity নেই</p>';
+        }
+        
+        let html = '';
+        activities.forEach(doc => {
+            const activity = doc.data();
+            html += `
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong>${activity.title}</strong>
+                    <div style="display: flex; justify-content: space-between;">
+                        <small>+${activity.reward} ISLM</small>
+                        <small>${activity.timestamp?.toDate().toLocaleDateString('bn-BD')}</small>
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    } catch (error) {
+        return '<p>Activities load করতে সমস্যা</p>';
+    }
 }
 
 async function claimDailyReward() {
+    const user = window.currentUser;
+    if (!user) return;
+    
+    const today = new Date().toDateString();
+    const rewardAmount = 2;
+    
     try {
-        const app = window.divineRizQApp;
-        const userId = app?.getUser()?.uid;
+        const rewardDoc = await db.collection('dailyRewards').doc(user.uid).get();
         
-        if (!userId) return;
-
-        // Show ad before reward
-        await monetagAds.showRewardedAd();
-        
-        // Claim reward
-        const result = await apiService.recordAdView(userId, 'daily_reward');
-        
-        if (result.success) {
-            // Update UI
-            updateDailyRewardStatus();
-            
-            // Show success message
-            alert('দৈনিক রিওয়ার্ড সফলভাবে নেওয়া হয়েছে!');
-            
-            // Reload stats
-            await loadUserStats();
-        }
-        
-    } catch (error) {
-        console.error('Error claiming daily reward:', error);
-        alert('রিওয়ার্ড নিতে সমস্যা হচ্ছে। আবার চেষ্টা করুন।');
-    }
-}
-
-function updateDailyRewardStatus() {
-    // This would typically come from backend
-    const rewardStatus = document.getElementById('rewardStatus');
-    const progressBar = document.getElementById('rewardProgress');
-    const claimBtn = document.getElementById('claimRewardBtn');
-    
-    // Mock data - replace with actual data from backend
-    const currentDay = 3; // Example: user is on day 3
-    const totalDays = 7;
-    const progress = (currentDay / totalDays) * 100;
-    
-    progressBar.style.width = `${progress}%`;
-    
-    if (currentDay >= totalDays) {
-        rewardStatus.textContent = 'প্রাপ্তি';
-        claimBtn.disabled = false;
-        claimBtn.textContent = 'রিওয়ার্ড নিন';
-    } else {
-        rewardStatus.textContent = `${currentDay}/${totalDays} দিন`;
-        claimBtn.disabled = true;
-        claimBtn.textContent = 'চলমান...';
-    }
-}
-
-async function loadRecentActivity() {
-    try {
-        const app = window.divineRizQApp;
-        const userId = app?.getUser()?.uid;
-        
-        if (!userId) return;
-
-        // Load recent activities from backend
-        const activities = await apiService.getRecentActivity(userId);
-        const activityContainer = document.getElementById('recentActivity');
-        
-        if (activities.length === 0) {
-            activityContainer.innerHTML = `
-                <p style="text-align: center; color: #666; padding: 2rem;">
-                    কোনো এক্টিভিটি নেই
-                </p>
-            `;
+        if (rewardDoc.exists && rewardDoc.data().lastClaim === today) {
+            alert('আপনি ইতিমধ্যে আজকের রিওয়ার্ড collected করেছেন!');
             return;
         }
         
-        activityContainer.innerHTML = activities.map(activity => `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0;">
-                <div>
-                    <strong>${activity.description}</strong>
-                    <br>
-                    <small style="color: #666;">${new Date(activity.timestamp).toLocaleDateString('bn-BD')}</small>
-                </div>
-                <span style="color: var(--secondary-gold); font-weight: bold;">
-                    +${activity.amount} ISLM
-                </span>
-            </div>
-        `).join('');
+        // Update daily reward
+        await db.collection('dailyRewards').doc(user.uid).set({
+            lastClaim: today,
+            streak: rewardDoc.exists ? rewardDoc.data().streak + 1 : 1
+        });
+        
+        // Update user balance
+        await updateUserBalance(user.uid, rewardAmount, 'daily_reward');
+        
+        // Add activity
+        await db.collection('activities').add({
+            userId: user.uid,
+            title: 'দৈনিক রিওয়ার্ড',
+            reward: rewardAmount,
+            type: 'daily_reward',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        alert(`🎉 ${rewardAmount} ISLM দৈনিক রিওয়ার্ড collected!`);
+        window.navigateTo('home');
         
     } catch (error) {
-        console.error('Error loading recent activity:', error);
+        console.error('Error claiming daily reward:', error);
+        alert('রিওয়ার্ড claim করতে সমস্যা হচ্ছে।');
     }
 }
