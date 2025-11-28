@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine RizQ - আপনার আয়ের ইসলামিক প্ল্যাটফর্ম</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="loader-container">
+            <div class="loader"></div>
+            <p>Divine RizQ লোড হচ্ছে...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="src/firebase-config.js"></script>
+    <script src="src/app.js"></script>
+    <script src="src/router.js"></script>
+    <script src="src/utils/telegramAuth.js"></script>
+    <script src="src/utils/emailAuth.js"></script>
+    <script src="src/utils/taskVerifyEngine.js"></script>
+    <script src="src/utils/api.js"></script>
+    
+    <!-- Components -->
+    <script src="src/components/navbar.js"></script>
+    <script src="src/components/taskCard.js"></script>
+    <script src="src/components/loader.js"></script>
+    
+    <!-- Pages -->
+    <script src="src/pages/home.js"></script>
+    <script src="src/pages/tasks.js"></script>
+    <script src="src/pages/ads.js"></script>
+    <script src="src/pages/wallet.js"></script>
+    <script src="src/pages/withdraw.js"></script>
+    <script src="src/pages/referral.js"></script>
+    <script src="src/pages/profile.js"></script>
+    <script src="src/pages/login.js"></script>
+    <script src="src/pages/verify.js"></script>
+</body>
+</html>
