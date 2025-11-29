@@ -1,4 +1,4 @@
-// Home Page Component
+// Modern Home Page Component
 async function loadHomePage() {
     const user = window.currentUser;
     let userData = {};
@@ -8,182 +8,229 @@ async function loadHomePage() {
     }
     
     return `
-        <div class="page active" id="home-page">
-            <div class="text-center mb-2">
-                <h1 class="text-green">🕌 Divine RizQ</h1>
-                <p class="text-gold">হালাল আয়ের ইসলামিক প্ল্যাটফর্ম</p>
-            </div>
-
-            <!-- User Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">${userData.balance || 0} ISLM</div>
-                    <div class="stat-label">বর্তমান ব্যালেন্স</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${userData.totalEarned || 0} ISLM</div>
-                    <div class="stat-label">মোট আয়</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${userData.completedTasks || 0}</div>
-                    <div class="stat-label">সম্পন্ন টাস্ক</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${userData.referralCount || 0}</div>
-                    <div class="stat-label">রেফারেল</div>
+        <div class="page active fade-in" id="home-page">
+            <!-- Modern Header -->
+            <div class="app-header">
+                <div class="header-content">
+                    <h1 class="app-title">🕌 Divine RizQ</h1>
+                    <p class="app-subtitle">হালাল আয়ের ইসলামিক প্ল্যাটফর্ম</p>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="card">
-                <h3 class="card-title">দ্রুত একশন</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <button class="btn btn-gold" onclick="window.navigateTo('tasks')">
-                        📋 টাস্ক করুন
+            <div class="main-content">
+                <!-- Balance Display -->
+                <div class="balance-display">
+                    <div class="balance-label">বর্তমান ব্যালেন্স</div>
+                    <div class="balance-amount">${userData.balance || 0} ISLM</div>
+                    <div class="balance-label">হালাল উপার্জন</div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid-modern">
+                    <div class="stat-card-modern">
+                        <div class="stat-value-modern">${userData.totalEarned || 0}</div>
+                        <div class="stat-label-modern">মোট আয়</div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-value-modern">${userData.completedTasks || 0}</div>
+                        <div class="stat-label-modern">টাস্ক</div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-value-modern">${userData.referralCount || 0}</div>
+                        <div class="stat-label-modern">রেফারেল</div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-value-modern">${await getTodayEarnings()} ISLM</div>
+                        <div class="stat-label-modern">আজকের আয়</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h3 class="card-title">দ্রুত একশন</h3>
+                        <div class="card-icon">⚡</div>
+                    </div>
+                    <div class="quick-actions">
+                        <a class="action-btn" onclick="window.navigateTo('tasks')">
+                            <span class="action-icon">📋</span>
+                            <span class="action-text">টাস্ক করুন</span>
+                        </a>
+                        <a class="action-btn" onclick="window.navigateTo('ads')">
+                            <span class="action-icon">📺</span>
+                            <span class="action-text">এড দেখুন</span>
+                        </a>
+                        <a class="action-btn" onclick="window.navigateTo('referral')">
+                            <span class="action-icon">👥</span>
+                            <span class="action-text">রেফারেল দিন</span>
+                        </a>
+                        <a class="action-btn" onclick="window.navigateTo('withdraw')">
+                            <span class="action-icon">💳</span>
+                            <span class="action-text">উত্তোলন করুন</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Daily Reward -->
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h3 class="card-title">📅 দৈনিক রিওয়ার্ড</h3>
+                        <div class="card-icon">🎁</div>
+                    </div>
+                    <div id="daily-reward-status">
+                        ${await getDailyRewardStatus()}
+                    </div>
+                    <button class="btn-modern btn-block mt-1" onclick="claimDailyReward()" id="daily-reward-btn">
+                        🎁 দৈনিক রিওয়ার্ড নিন
                     </button>
-                    <button class="btn btn-gold" onclick="window.navigateTo('ads')">
-                        📺 এড দেখুন
-                    </button>
-                    <button class="btn" onclick="window.navigateTo('referral')">
-                        👥 রেফারেল দিন
-                    </button>
-                    <button class="btn" onclick="window.navigateTo('withdraw')">
-                        💳 উত্তোলন করুন
-                    </button>
                 </div>
-            </div>
 
-            <!-- Daily Reward -->
-            <div class="card">
-                <h3 class="card-title">📅 দৈনিক রিওয়ার্ড</h3>
-                <div id="daily-reward-status">
-                    ${await getDailyRewardStatus()}
+                <!-- Active Tasks -->
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔥 একটিভ টাস্ক</h3>
+                        <div class="card-icon">🔥</div>
+                    </div>
+                    <div id="active-tasks">
+                        ${await getActiveTasks()}
+                    </div>
                 </div>
-                <button class="btn btn-block mt-1" onclick="claimDailyReward()" id="daily-reward-btn">
-                    দৈনিক রিওয়ার্ড নিন
-                </button>
-            </div>
 
-            <!-- Recent Activities -->
-            <div class="card">
-                <h3 class="card-title">🔄 সাম্প্রতিক একটিভিটি</h3>
-                <div id="recent-activities">
-                    ${await getRecentActivities()}
-                </div>
-            </div>
-
-            <!-- App Info -->
-            <div class="card text-center">
-                <h3 class="text-green">💫 Divine RizQ সম্পর্কে</h3>
-                <p>হালাল উপায়ে আয় করুন, ইসলামিক মূল্যবোধ নিয়ে এগিয়ে যান। টাস্ক সম্পন্ন করুন, এড দেখুন এবং রেফারেল দিয়ে আয় করুন।</p>
-                <div class="mt-1">
-                    <small class="text-gold">শুরু করেছেন: ${userData.joinedAt ? new Date(userData.joinedAt.toDate()).toLocaleDateString('bn-BD') : 'আজ'}</small>
+                <!-- Recent Earnings -->
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 সাম্প্রতিক আয়</h3>
+                        <div class="card-icon">💸</div>
+                    </div>
+                    <div id="recent-earnings">
+                        ${await getRecentEarnings()}
+                    </div>
                 </div>
             </div>
         </div>
     `;
 }
 
-async function getUserData(uid) {
-    try {
-        const doc = await db.collection('users').doc(uid).get();
-        return doc.exists ? doc.data() : {};
-    } catch (error) {
-        console.error('Error getting user data:', error);
-        return {};
-    }
-}
-
-async function getDailyRewardStatus() {
+async function getTodayEarnings() {
     const user = window.currentUser;
-    if (!user) return '<p>লগইন প্রয়োজন</p>';
+    if (!user) return 0;
     
     try {
-        const today = new Date().toDateString();
-        const rewardDoc = await db.collection('dailyRewards').doc(user.uid).get();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         
-        if (rewardDoc.exists && rewardDoc.data().lastClaim === today) {
-            return '<p class="text-green">✅ আজকের রিওয়ার্ড already collected!</p>';
-        }
-        
-        return '<p>🎁 আজকের দৈনিক রিওয়ার্ড উপলব্ধ: <strong>2 ISLM</strong></p>';
-    } catch (error) {
-        return '<p>রিওয়ার্ড status check করতে সমস্যা হচ্ছে</p>';
-    }
-}
-
-async function getRecentActivities() {
-    const user = window.currentUser;
-    if (!user) return '<p>লগইন প্রয়োজন</p>';
-    
-    try {
-        const activities = await db.collection('activities')
+        const snapshot = await db.collection('activities')
             .where('userId', '==', user.uid)
-            .orderBy('timestamp', 'desc')
-            .limit(5)
+            .where('timestamp', '>=', today)
             .get();
         
-        if (activities.empty) {
-            return '<p>এখনও কোন activity নেই</p>';
+        let total = 0;
+        snapshot.forEach(doc => {
+            total += doc.data().reward || 0;
+        });
+        return total;
+    } catch (error) {
+        return 0;
+    }
+}
+
+async function getActiveTasks() {
+    const user = window.currentUser;
+    if (!user) return '<p>লগইন প্রয়োজন</p>';
+    
+    try {
+        const snapshot = await db.collection('taskProgress')
+            .where('userId', '==', user.uid)
+            .where('status', '==', 'in_progress')
+            .limit(3)
+            .get();
+        
+        if (snapshot.empty) {
+            return `
+                <div style="text-align: center; padding: 2rem 1rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                    <p>কোন একটিভ টাস্ক নেই</p>
+                    <button class="btn-modern mt-1" onclick="window.navigateTo('tasks')">
+                        টাস্ক শুরু করুন
+                    </button>
+                </div>
+            `;
         }
         
         let html = '';
-        activities.forEach(doc => {
-            const activity = doc.data();
+        snapshot.forEach(doc => {
+            const progress = doc.data();
             html += `
-                <div style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0;">
-                    <strong>${activity.title}</strong>
-                    <div style="display: flex; justify-content: space-between;">
-                        <small>+${activity.reward} ISLM</small>
-                        <small>${activity.timestamp?.toDate().toLocaleDateString('bn-BD')}</small>
+                <div class="task-card-modern">
+                    <div class="task-header-modern">
+                        <div class="task-title-modern">${progress.taskTitle}</div>
+                        <div class="task-reward-modern">+${progress.taskReward} ISLM</div>
+                    </div>
+                    <div class="progress-modern">
+                        <div class="progress-bar-modern" style="width: ${progress.percentage || 0}%"></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn-modern" onclick="continueTask('${progress.taskId}')">
+                            🔄 চালিয়ে যান (${progress.percentage || 0}%)
+                        </button>
                     </div>
                 </div>
             `;
         });
         return html;
     } catch (error) {
-        return '<p>Activities load করতে সমস্যা</p>';
+        return '<p>টাস্ক লোড করতে সমস্যা</p>';
     }
 }
 
-async function claimDailyReward() {
+async function getRecentEarnings() {
     const user = window.currentUser;
-    if (!user) return;
-    
-    const today = new Date().toDateString();
-    const rewardAmount = 2;
+    if (!user) return '<p>লগইন প্রয়োজন</p>';
     
     try {
-        const rewardDoc = await db.collection('dailyRewards').doc(user.uid).get();
+        const snapshot = await db.collection('activities')
+            .where('userId', '==', user.uid)
+            .orderBy('timestamp', 'desc')
+            .limit(5)
+            .get();
         
-        if (rewardDoc.exists && rewardDoc.data().lastClaim === today) {
-            alert('আপনি ইতিমধ্যে আজকের রিওয়ার্ড collected করেছেন!');
-            return;
+        if (snapshot.empty) {
+            return '<p>এখনও কোন আয় নেই</p>';
         }
         
-        // Update daily reward
-        await db.collection('dailyRewards').doc(user.uid).set({
-            lastClaim: today,
-            streak: rewardDoc.exists ? rewardDoc.data().streak + 1 : 1
+        let html = '';
+        snapshot.forEach(doc => {
+            const activity = doc.data();
+            html += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #f0f0f0;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                            ${getActivityIcon(activity.type)}
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">${activity.title}</div>
+                            <small style="color: #666;">${activity.timestamp?.toDate().toLocaleDateString('bn-BD')}</small>
+                        </div>
+                    </div>
+                    <div style="color: var(--primary-green); font-weight: 700; font-size: 1.1rem;">
+                        +${activity.reward} ISLM
+                    </div>
+                </div>
+            `;
         });
-        
-        // Update user balance
-        await updateUserBalance(user.uid, rewardAmount, 'daily_reward');
-        
-        // Add activity
-        await db.collection('activities').add({
-            userId: user.uid,
-            title: 'দৈনিক রিওয়ার্ড',
-            reward: rewardAmount,
-            type: 'daily_reward',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        alert(`🎉 ${rewardAmount} ISLM দৈনিক রিওয়ার্ড collected!`);
-        window.navigateTo('home');
-        
+        return html;
     } catch (error) {
-        console.error('Error claiming daily reward:', error);
-        alert('রিওয়ার্ড claim করতে সমস্যা হচ্ছে।');
+        return '<p>আয়ের তথ্য লোড করতে সমস্যা</p>';
     }
+}
+
+function getActivityIcon(type) {
+    const icons = {
+        'task_reward': '📋',
+        'ad_reward': '📺',
+        'referral_commission': '👥',
+        'daily_reward': '🎁',
+        'withdrawal': '💳'
+    };
+    return icons[type] || '💰';
 }
