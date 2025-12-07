@@ -1,47 +1,41 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine RizQ - আপনার আয়ের ইসলামিক প্ল্যাটফর্ম</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="assets/logo.png" type="image/png">
-    <!-- Firebase CDN -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <title>Divine Rizq - Telegram Bot</title>
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
     <div id="app">
-        <div class="loader-container">
-            <div class="loader"></div>
-            <p>Divine RizQ লোড হচ্ছে...</p>
-        </div>
+        <header>
+            <h1>Divine Rizq</h1>
+            <p>Telegram Bot for Daily Inspiration</p>
+        </header>
+        
+        <main>
+            <section id="features">
+                <h2>Features</h2>
+                <ul>
+                    <li>Daily inspirational quotes</li>
+                    <li>Islamic wisdom and guidance</li>
+                    <li>Community engagement</li>
+                    <li>Multi-language support</li>
+                </ul>
+            </section>
+            
+            <section id="getting-started">
+                <h2>Getting Started</h2>
+                <p>Start the bot on Telegram to receive daily messages of inspiration and guidance.</p>
+                <button id="start-bot-btn">Start Bot</button>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Divine Rizq. All rights reserved.</p>
+        </footer>
     </div>
-
-    <!-- Scripts -->
-    <script src="src/firebase-config.js"></script>
-    <script src="src/app.js"></script>
-    <script src="src/router.js"></script>
-    <script src="src/utils/telegramAuth.js"></script>
-    <script src="src/utils/emailAuth.js"></script>
-    <script src="src/utils/taskVerifyEngine.js"></script>
-    <script src="src/utils/api.js"></script>
     
-    <!-- Components -->
-    <script src="src/components/navbar.js"></script>
-    <script src="src/components/taskCard.js"></script>
-    <script src="src/components/loader.js"></script>
-    
-    <!-- Pages -->
-    <script src="src/pages/home.js"></script>
-    <script src="src/pages/tasks.js"></script>
-    <script src="src/pages/ads.js"></script>
-    <script src="src/pages/wallet.js"></script>
-    <script src="src/pages/withdraw.js"></script>
-    <script src="src/pages/referral.js"></script>
-    <script src="src/pages/profile.js"></script>
-    <script src="src/pages/login.js"></script>
-    <script src="src/pages/verify.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
 </html>
